@@ -10,10 +10,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary-color: #0087b1;
-      --secondary-color: #f0f8ff;
-      --text-color: #333;
-      --text-light: #666;
+      --primary-color: #bee3f8; /* Accent color */
+      --background-color: #2a2a2a; /* Dark background */
+      --text-color: #ffffff; /* Light text color */
+      --text-light: #b0b0b0; /* Light gray text */
+      --card-background: #1a1a1a; /* Card background */
+      --card-shadow: rgba(255, 255, 255, 0.1);
     }
 
     * {
@@ -24,7 +26,7 @@
     }
 
     body {
-      background-color: var(--secondary-color);
+      background-color: var(--background-color);
       color: var(--text-color);
     }
 
@@ -60,16 +62,16 @@
     }
 
     .team-card {
-      background-color: #fff;
+      background-color: var(--card-background);
       border-radius: 15px;
       overflow: hidden;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 10px 20px var(--card-shadow);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
 
     .team-card:hover {
       transform: translateY(-10px);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 15px 30px var(--card-shadow);
     }
 
     .img-wrapper {
@@ -129,8 +131,8 @@
     }
 
     .footer_section {
-      background-color: #333;
-      color: #fff;
+      background-color: #1a1a1a;
+      color: var(--text-light);
       text-align: center;
       padding: 20px 0;
     }
@@ -160,7 +162,7 @@
           </div>
           <div class="team-info">
             <h2 class="name">Ishita Grover</h2>
-            <p class="position">Team Lead</p>
+            <p class="position">AI Intern</p>
             <div class="social-media-links">
               <a href="http://www.twitter.com/" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
               <a href="http://www.linkedin.com/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
@@ -176,7 +178,7 @@
           </div>
           <div class="team-info">
             <h2 class="name">Jasleen Kaur</h2>
-            <p class="position">Data Scientist</p>
+            <p class="position">AI Intern</p>
             <div class="social-media-links">
               <a href="http://www.twitter.com/" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
               <a href="http://www.linkedin.com/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
@@ -192,7 +194,7 @@
           </div>
           <div class="team-info">
             <h2 class="name">Payal Kashyap</h2>
-            <p class="position">Data Analyst</p>
+            <p class="position">AI Intern</p>
             <div class="social-media-links">
               <a href="http://www.twitter.com/" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
               <a href="http://www.linkedin.com/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
@@ -208,7 +210,7 @@
           </div>
           <div class="team-info">
             <h2 class="name">Nisha Mudgil</h2>
-            <p class="position">UI/UX Designer</p>
+            <p class="position">AI Intern</p>
             <div class="social-media-links">
               <a href="http://www.twitter.com/" target="_blank" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
               <a href="http://www.linkedin.com/" target="_blank" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
