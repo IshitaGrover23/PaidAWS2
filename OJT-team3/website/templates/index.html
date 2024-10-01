@@ -388,7 +388,7 @@ footer .footer-bottom p {
             <i class="fa-solid fa-x-ray" class="h-20 mx-auto" style="color: #bee3f8; font-size: 50px;"></i>
     
             <h4 class="text-xl font-bold mt-4">Radiological Image Analysis</h4>
-            <p class="mt-1">AI algorithms for detecting brain tumors and pneumonia in chest X-rays with enhanced accuracy.</p>
+            <p class="mt-1">AI algorithms for detecting brain tumors with enhanced accuracy.</p>
           </div>
         </div>
     
@@ -492,6 +492,21 @@ footer .footer-bottom p {
     
   </main>
 
+  <!-- Chatbot -->
+<script>
+    window.watsonAssistantChatOptions = {
+      integrationID: "2344e893-fc43-437f-ad69-fcc7d4d6b6da", // The ID of this integration.
+      region: "eu-gb", // The region your integration is hosted in.
+      serviceInstanceID: "f3159294-f2a9-415d-81bb-586c3add83c1", // The ID of your service instance.
+      onLoad: async (instance) => { await instance.render(); }
+    };
+    setTimeout(function(){
+      const t=document.createElement('script');
+      t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+      document.head.appendChild(t);
+    });
+  </script>
+  
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-131505823-4"></script>
   <script>
