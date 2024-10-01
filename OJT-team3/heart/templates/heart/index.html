@@ -1,88 +1,171 @@
-{% extends 'User/base/base.html' %}
-{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heart Disease Predictor</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --background-color: #1e1e1e;
+            --text-color: #ffffff;
+            --input-background: #2d2d2d;
+            --input-border: #3d3d3d;
+            --button-color: #3498db;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
-        h2 {
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            gap: 20px;
+        }
+
+        .form-container {
+            flex: 1;
+        }
+
+        h1, h2 {
             text-align: center;
-            color: #333;
+            margin-bottom: 20px;
         }
 
-        form {
-            max-width: 500px;
-            margin: 0 auto;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        .form-group {
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         label {
-            display: inline-block;
-            width: 200px;
-            font-weight: bold;
-            margin-bottom: 10px;
+            flex: 1;
+            margin-right: 10px;
         }
 
         input[type="text"] {
-            width: 200px;
-            padding: 5px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            margin-bottom: 10px;
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            background-color: var(--input-background);
+            color: var(--text-color);
         }
 
         button[type="submit"] {
-            background-color: #4CAF50;
+            background-color: var(--button-color);
             color: white;
-            padding: 10px 20px;
             border: none;
+            padding: 10px;
+            font-size: 1rem;
             border-radius: 4px;
             cursor: pointer;
-            display: block;
-            margin: 0 auto;
+            width: 100%;
+            margin-top: 20px;
         }
 
-        button[type="submit"]:hover {
-            background-color: #45a049;
+        .result {
+            flex: 1;
+            background-color: var(--input-background);
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        a {
+            color: var(--button-color);
+            text-decoration: none;
+            margin-top: 10px;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    {% block content %}
-    <h2>Heart disease analysis</h2>
-    <form method="post">
-        {% csrf_token %}
-        <label>Age:</label><input type="text" name="age"><br>
-        <label>Sex:</label><input type="text" name="sex"><br>
-        <label>Chest Pain Type:</label><input type="text" name="cp"><br>
-        <label>Resting Blood Pressure:</label><input type="text" name="trestbps"><br>
-        <label>Cholesterol:</label><input type="text" name="chol"><br>
-        <label>Fasting Blood Sugar:</label><input type="text" name="fbs"><br>
-        <label>Resting ECG Results:</label><input type="text" name="restecg"><br>
-        <label>Maximum Heart Rate Achieved:</label><input type="text" name="thalach"><br>
-        <label>Exercise Induced Angina:</label><input type="text" name="exang"><br>
-        <label>Oldpeak:</label><input type="text" name="oldpeak"><br>
-        <label>Slope:</label><input type="text" name="slope"><br>
-        <label>Number of Major Vessels:</label><input type="text" name="ca"><br>
-        <label>Thal:</label><input type="text" name="thal"><br>
-        <button type="submit">Predict</button>
-    </form>
-    {% if result %}
-    <div class="result-container">
-        <h2>Prediction Result</h2>
-        <p>{{ result }}</p>
-        <a href="{% url 'heart' %}">Predict Again</a>
+    <div class="container">
+        <div class="form-container">
+            <h1>Heart Disease Analysis</h1>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="age">Age:</label>
+                    <input type="text" id="age" name="age">
+                </div>
+                <div class="form-group">
+                    <label for="sex">Sex:</label>
+                    <input type="text" id="sex" name="sex">
+                </div>
+                <div class="form-group">
+                    <label for="cp">Chest Pain Type:</label>
+                    <input type="text" id="cp" name="cp">
+                </div>
+                <div class="form-group">
+                    <label for="trestbps">Resting Blood Pressure:</label>
+                    <input type="text" id="trestbps" name="trestbps">
+                </div>
+                <div class="form-group">
+                    <label for="chol">Cholesterol:</label>
+                    <input type="text" id="chol" name="chol">
+                </div>
+                <div class="form-group">
+                    <label for="fbs">Fasting Blood Sugar:</label>
+                    <input type="text" id="fbs" name="fbs">
+                </div>
+                <div class="form-group">
+                    <label for="restecg">Resting ECG Results:</label>
+                    <input type="text" id="restecg" name="restecg">
+                </div>
+                <div class="form-group">
+                    <label for="thalach">Maximum Heart Rate Achieved:</label>
+                    <input type="text" id="thalach" name="thalach">
+                </div>
+                <div class="form-group">
+                    <label for="exang">Exercise Induced Angina:</label>
+                    <input type="text" id="exang" name="exang">
+                </div>
+                <div class="form-group">
+                    <label for="oldpeak">Oldpeak:</label>
+                    <input type="text" id="oldpeak" name="oldpeak">
+                </div>
+                <div class="form-group">
+                    <label for="slope">Slope:</label>
+                    <input type="text" id="slope" name="slope">
+                </div>
+                <div class="form-group">
+                    <label for="ca">Number of Major Vessels:</label>
+                    <input type="text" id="ca" name="ca">
+                </div>
+                <div class="form-group">
+                    <label for="thal">Thal:</label>
+                    <input type="text" id="thal" name="thal">
+                </div>
+                <button type="submit">Predict</button>
+            </form>
+        </div>
+        {% if result %}
+        <div class="result">
+            <h2>Prediction Result</h2>
+            <p>{{ result }}</p>
+            <a href="{% url 'heart' %}">Predict Again</a>
+        </div>
+        {% endif %}
     </div>
-    {% endif %}
 </body>
 </html>
-{% endblock %}
