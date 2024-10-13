@@ -8,7 +8,145 @@
     <meta name="keywords" content="AI, Machine Learning, Dashboard, Text Summarization, Diabetes Detection, Heart Disease Analysis, Recommendation System, Brain Tumor">
     <meta name="author" content="Your Name">
     <title>{% block title %}AI Services Dashboard{% endblock %}</title>
-    
+    <style>
+        body {
+            background-color: #121212; /* Dark background for the entire body */
+            color: #ffffff; /* Light text color */
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 250px auto; /* Sidebar width and main content */
+            grid-template-rows: auto 1fr auto;
+            height: 100vh;
+            transition: grid-template-columns 0.3s; /* Smooth transition for width change */
+        }
+
+        .grid-container.sidebar-closed {
+            grid-template-columns: 0 auto; /* Collapse sidebar */
+        }
+
+        .header {
+            background-color: #1e1e1e; /* Darker header background */
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-bar {
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 300px; /* Adjust width as needed */
+            padding: 10px;
+            border: 1px solid #444; /* Dark border */
+            border-radius: 5px;
+            background-color: #333; /* Dark input background */
+            color: #ffffff; /* Light text color for input */
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        .search-bar input:focus {
+            border: 1px solid #007bff; /* Highlight color */
+        }
+
+        .suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1e1e1e; /* Dark suggestion background */
+            border: 1px solid #444; /* Dark border */
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10; /* Ensure it appears above other elements */
+            display: none; /* Initially hidden */
+        }
+
+        .suggestion-item {
+            padding: 10px;
+            cursor: pointer;
+            color: #ffffff; /* Light text color */
+        }
+
+        .suggestion-item:hover {
+            background: #333; /* Slightly lighter on hover */
+        }
+
+        .sidebar {
+            background-color: #1e1e1e; /* Dark sidebar background */
+            color: #ffffff; /* Light text color */
+            width: 250px; /* Fixed width for the sidebar */
+            overflow-y: auto;
+            transition: width 0.3s; /* Smooth transition for width change */
+        }
+
+        .sidebar-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .sidebar-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar-list-item a {
+            color: #ffffff; /* Light text color */
+            text-decoration: none; /* Remove underline */
+            padding: 10px;
+            display: block; /* Full-width clickable area */
+        }
+
+        .sidebar-list-item a:hover {
+            background-color: #333; /* Lighter on hover */
+        }
+
+        .main-container {
+            padding: 20px; /* Main content padding */
+            background-color: #121212; /* Main background */
+            color: #ffffff; /* Light text color */
+            overflow-y: auto; /* Allow scrolling */
+            transition: padding-left 0.3s; /* Smooth transition for padding change */
+        }
+
+        .profile-dropdown {
+            position: relative; /* Position for dropdown */
+        }
+
+        .dropdown-menu {
+            display: none; /* Initially hidden */
+            position: absolute;
+            right: 0;
+            background: #1e1e1e; /* Dark dropdown background */
+            border: 1px solid #444; /* Dark border */
+            border-radius: 5px;
+            z-index: 100; /* Ensure it appears above other elements */
+        }
+
+        .profile-dropdown:hover .dropdown-menu {
+            display: block; /* Show on hover */
+        }
+
+        .dropdown-menu a {
+            color: #ffffff; /* Light text color */
+            padding: 10px;
+            text-decoration: none; /* Remove underline */
+            display: block; /* Full-width clickable area */
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #333; /* Lighter on hover */
+        }
+
+    </style>
     <!-- Montserrat Font -->
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
@@ -19,7 +157,7 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 </head>
 <body>
-  <div class="grid-container">
+  <div class="grid-container" id="grid-container">
     <!-- Header -->
     <header class="header">
       <div class="menu-icon" onclick="toggleSidebar()" aria-label="Toggle Sidebar" aria-expanded="false">
@@ -27,10 +165,11 @@
       </div>
       <div class="header-left">
         <div class="search-bar">
-          <input type="text" placeholder="Search..." id="search-input" aria-label="Search input">
-          <button type="button" id="search-btn" aria-label="Search">
-            <span class="material-icons-outlined">search</span>
+          <input type="text" placeholder="Search..." id="search-input" aria-label="Search input" onkeyup="searchLinks()">
+          <button type="submit" id="search-btn" aria-label="Search">
+              <span class="material-icons-outlined">search</span>
           </button>
+          <div id="suggestions" class="suggestions"></div>
         </div>
       </div>
       
@@ -47,10 +186,10 @@
     <!-- End Header -->
 
     <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar closed">
+    <aside id="sidebar" class="sidebar">
       <div class="sidebar-title">
         <div class="sidebar-brand">
-          <a href="{% url 'user_home' %}">
+          <a href="{% url 'user_home' %}" style="color: #ffffff;"> <!-- Ensure brand link is white -->
             <span class="material-icons-outlined">smart_toy</span> AI Services
           </a>
         </div>
@@ -82,7 +221,6 @@
             <span class="material-icons-outlined">psychology</span> Brain Tumor Detection
           </a>
         </li>
-        
       </ul>
     </aside>
     <!-- End Sidebar -->
@@ -101,38 +239,57 @@
 
   <!-- JavaScript -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="{% static 'js/scripts.js' %}"></script>
   <script>
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const gridContainer = document.querySelector('.grid-container');
-      const isOpen = !sidebar.classList.contains('closed');
-      
-      sidebar.classList.toggle('open', !isOpen);
-      sidebar.classList.toggle('closed', isOpen);
+    const items = [
+        { name: 'Text Summarization', link: '{% url "text_summarization" %}' },
+        { name: 'Diabetes Detection', link: '{% url "predict_diabetes" %}' },
+        { name: 'Heart Disease Analysis', link: '{% url "heart" %}' },
+        { name: 'Recommendation System', link: '{% url "recommender" %}' },
+        { name: 'Brain Tumor Detection', link: '{% url "braintumor" %}' },
+    ];
 
-      gridContainer.style.gridTemplateColumns = isOpen ? '0 1fr' : 'var(--sidebar-width) 1fr';
-      gridContainer.style.gridTemplateAreas = isOpen 
-        ? `"header header"
-           "main main"`
-        : `"header header"
-           "sidebar main"`;
+    function searchLinks() {
+        const searchInput = document.getElementById('search-input').value.toLowerCase();
+        const suggestions = document.getElementById('suggestions');
+        suggestions.innerHTML = ''; // Clear previous suggestions
 
-      document.querySelector('.menu-icon').setAttribute('aria-expanded', !isOpen);
+        if (searchInput) {
+            items.forEach(item => {
+                if (item.name.toLowerCase().includes(searchInput)) {
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.className = 'suggestion-item';
+                    suggestionItem.innerHTML = `<a href="${item.link}">${item.name}</a>`;
+                    suggestions.appendChild(suggestionItem);
+                }
+            });
+            suggestions.style.display = suggestions.innerHTML ? 'block' : 'none'; // Show suggestions if available
+        } else {
+            suggestions.style.display = 'none'; // Hide suggestions if input is empty
+        }
     }
 
-    $(document).ready(function() {
-      $('#account-icon').on('click', function() {
-        $('#dropdown-menu').toggle();
-        $('#dropdown-menu').attr('aria-hidden', $('#dropdown-menu').is(':visible'));
-      });
+    document.addEventListener('DOMContentLoaded', function () {
+        const profileIcon = document.getElementById('account-icon');
+        const dropdownMenu = document.getElementById('dropdown-menu');
+        const gridContainer = document.getElementById('grid-container');
 
-      $(window).on('click', function(event) {
-        if (!$(event.target).closest('#account-icon').length) {
-          $('#dropdown-menu').hide().attr('aria-hidden', 'true');
-        }
-      });
+        profileIcon.addEventListener('click', function () {
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+        });
+        
+        document.addEventListener('click', function (event) {
+            if (!profileIcon.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.style.display = 'none';
+            }
+        });
     });
-  </script>
+
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const gridContainer = document.getElementById('grid-container');
+        sidebar.classList.toggle('closed'); // Add or remove closed class to toggle visibility
+        gridContainer.classList.toggle('sidebar-closed'); // Adjust the grid layout when sidebar is toggled
+    }
+</script>
 </body>
 </html>
