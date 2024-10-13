@@ -107,37 +107,40 @@ def user_profile(request):
         email = request.POST.get('email')
         bio = request.POST.get('bio', '')
 
-        # Updating user object with first and last name (if full name provided)
+        # Updating user object with first and last name
         if username:
             user.first_name, user.last_name = username.split(' ', 1) if ' ' in username else (username, '')
 
         user.email = email
+        user.save()  # Save user details
 
         # Handling profile image upload
         if 'profile_image' in request.FILES:
             profile_image = request.FILES['profile_image']
-            user.profile_image = profile_image  # Assuming the User model has a profile_image field
+            if hasattr(user, 'profile'):
+                user.profile.profile_image = profile_image  # Save to Profile model
+                user.profile.save()  # Save the profile
+            else:
+                # Create profile if it doesn't exist
+                Profile.objects.create(user=user, bio=bio, profile_image=profile_image)
 
         # Updating profile bio if it exists
         if hasattr(user, 'profile'):
             user.profile.bio = bio
             user.profile.save()
 
-        # Save the user object
-        user.save()
-
-        # Success message and redirect
         messages.success(request, 'Profile updated successfully!')
         return redirect('user_profile')
 
     else:
         # On GET request, render the profile page with user details
+        profile = user.profile if hasattr(user, 'profile') else None
         context = {
             'username': user.get_full_name(),
             'email': user.email,
-            'bio': getattr(user.profile, 'bio', '') if hasattr(user, 'profile') else '',
+            'bio': profile.bio if profile else '',
             'date_joined': user.date_joined,
-            'profile_image': getattr(user, 'profile_image', None),
+            'profile_image': profile.profile_image.url if profile and profile.profile_image else None,
         }
         return render(request, 'User/UserProfile.html', context)
 
